@@ -13,7 +13,7 @@ A high-performance, asynchronous algorithmic trading system that ingests real-ti
 *   **Risk Management**: Integrated position sizing based on account equity, volatility (ATR), and signal confidence. Supports adjustable trailing stops.
 *   **Execution**: Automated order placement via `ib_insync` for Interactive Brokers, with "bracket-like" logic for innovative trade management.
 
-## 🏗 Architecture
+##  Architecture
 
 The system operates as an asynchronous pipeline:
 
