@@ -2,7 +2,7 @@
 
 A high-performance, asynchronous algorithmic trading system that ingests real-time news, performs multi-stage deductions using LLMs (Large Language Models), and executes trades via Interactive Brokers (IBKR).
 
-## 🚀 Features
+##  Features
 
 *   **Multi-Source Ingestion**: Supports real-time news from Benzinga WebSocket, IBKR (TWS) News, and custom news sources.
 *   **Smart Deduplication**: Uses semantic similarity (Embeddings) and exact hashing to filter out duplicate news stories in real-time.
@@ -47,7 +47,7 @@ graph TD
     end
 ```
 
-### 🔹 Trade Lifecycle Example
+###  Trade Lifecycle Example
 Here is how a single trade is conducted from news to execution:
 
 1.  **News Arrival**: The system receives a headline: *"Files 8K: FDA Approves New Drug Application for XYZ Corp"* via Benzinga WebSocket.
@@ -66,7 +66,7 @@ Here is how a single trade is conducted from news to execution:
     *   Volatility (ATR) and Stop Distance.
 7.  **Execution**: `ibkr_executor.py` sends a "Snap-to-Mid" Market Order to Interactive Brokers with an attached **Trailing Stop** order to protect profits automatically.
 
-## 🛠 Prerequisites
+##  Prerequisites
 
 *   **Python 3.10+**
 *   **Interactive Brokers Account** (Paper Trading recommended for testing)
@@ -76,7 +76,7 @@ Here is how a single trade is conducted from news to execution:
     *   **OpenAI**: For embeddings (deduplication) and optional fallback models.
     *   **Benzinga**: For the primary news data feed.
 
-## 📦 Installation
+##  Installation
 
 1.  **Clone the repository:**
     ```bash
@@ -95,7 +95,7 @@ Here is how a single trade is conducted from news to execution:
     pip install -r requirements.txt
     ```
 
-## ⚙️ Configuration
+##  Configuration
 
 The project is configured completely via Environment Variables. You can set these in a `.env` file or export them in your shell.
 
@@ -137,7 +137,7 @@ The project is configured completely via Environment Variables. You can set thes
 | `ATR_BAR_SIZE` | Bar size for ATR calc. | `1 hour` |
 | `DEDUPE_ENABLED` | Enable semantic deduplication. | `1` |
 
-## 🏃 Usage
+##  Usage
 
 1.  **Start your IB Gateway or TWS** and ensure API connections are enabled on port `4002` (or your configured port).
 2.  **Run the main application:**
@@ -154,6 +154,6 @@ The project is configured completely via Environment Variables. You can set thes
     uvicorn metrics_api:app --host 0.0.0.0 --port 2010
     ```
 
-## ⚠️ Disclaimer
+##  Disclaimer
 
 **Trading involves significant risk.** This software is for educational and research purposes only. It is not financial advice. The authors are not responsible for any financial losses incurred while using this software. Always test thoroughly in a paper trading environment before deploying real capital.
