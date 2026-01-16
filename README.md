@@ -17,13 +17,54 @@ A high-performance, asynchronous algorithmic trading system that ingests real-ti
 
 The system operates as an asynchronous pipeline:
 
-1.  **Ingestion**: `main.py` listens to configured WebSockets.
-2.  **Dedupe**: `dedupe.py` checks incoming headlines against a history of hashes and vector embeddings (using OpenAI/SentenceTransformers).
-3.  **Analysis**:
-    *   **Filter**: Checks if the news is actionable and symbol-specific.
-    *   **Direction**: Analyzes sentiment and potential market impact.
-    *   **Risk**: Calculates technical risk metrics (ATR) and approves/rejects the trade plan.
-4.  **Execution**: `ibkr_executor.py` places market orders with attached urgency/algo settings if criteria are met.
+### Pipeline Visualization
+```mermaid
+graph TD
+    subgraph Sources
+        BZ[Benzinga WS]
+        TWS[IBKR TWS News]
+        Self[Custom WS]
+    end
+
+    subgraph Core[Main Pipeline]
+        BZ & TWS & Self -->|Raw News| Dedupe
+        Dedupe{Deduped?}
+        Dedupe -->|No| Drop1[Drop]
+        Dedupe -->|Yes| Filter[LLM Filter Agent]
+        
+        Filter -->|Actionable?| Direction[LLM Direction Agent]
+        Filter -->|No| Drop2[Drop]
+        
+        Direction -->|Signal| Risk[LLM Risk Agent]
+        Direction -->|Skip/Hold| Drop3[Drop]
+        
+        Risk -->|Approve?| Execution
+        Risk -->|No| Drop4[Drop]
+    end
+
+    subgraph Execution[IBKR Execution]
+        Exc[IBKR Executor] -->|Place Order| IB[Interactive Brokers]
+    end
+```
+
+### 🔹 Trade Lifecycle Example
+Here is how a single trade is conducted from news to execution:
+
+1.  **News Arrival**: The system receives a headline: *"Files 8K: FDA Approves New Drug Application for XYZ Corp"* via Benzinga WebSocket.
+2.  **Deduplication**: The system checks if this story has been processed recently using both exact hash match and vector embedding similarity.
+3.  **Filter Stage** (Agent 1): The LLM analyzes the headline.
+    *   *Result*: `{"actionable": true, "type": "fda_approval"}`.
+4.  **Direction Stage** (Agent 2): The LLM analyzes sentiment and improved fundamentals.
+    *   *Result*: `{"action": "buy", "confidence": 0.9, "magnitude": "high"}`.
+5.  **Risk Stage** (Agent 3): The LLM reviews the plan and calculates technical stops.
+    *   *Input*: "Buying XYZ on FDA approval with high confidence."
+    *   *System Check*: Fetches current ATR (Average True Range) for XYZ.
+    *   *Result*: `{"approve": true, "atr_trail_mult": 2.0}`.
+6.  **Position Sizing**: The system calculates share count based on:
+    *   Account Equity ($100k)
+    *   Risk per trade (1% = $1k)
+    *   Volatility (ATR) and Stop Distance.
+7.  **Execution**: `ibkr_executor.py` sends a "Snap-to-Mid" Market Order to Interactive Brokers with an attached **Trailing Stop** order to protect profits automatically.
 
 ## 🛠 Prerequisites
 
