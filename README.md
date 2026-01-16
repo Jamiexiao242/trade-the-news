@@ -72,9 +72,7 @@ Here is how a single trade is conducted from news to execution:
 *   **Interactive Brokers Account** (Paper Trading recommended for testing)
 *   **IB Gateway or TWS** running locally.
 *   **API Keys**:
-    *   **Groq**: For fast LLM inference (Llama3/Mixtral).
     *   **OpenAI**: For embeddings (deduplication) and optional fallback models.
-    *   **Benzinga**: For the primary news data feed.
 
 ##  Installation
 
@@ -102,7 +100,6 @@ The project is configured completely via Environment Variables. You can set thes
 ### Core & API Keys
 | Variable | Description | Default |
 | :--- | :--- | :--- |
-| `GROQ_API_KEY` | **Required.** Key for Groq API (LLM inference). | |
 | `BENZINGA_API_KEY` | Key for Benzinga News API (if enabled). | |
 | `OPENAI_API_KEY` | Key for OpenAI (required for Dedupe embeddings). | |
 | `BENZINGA_WS_URL` | WebSocket URL for Benzinga. | `wss://api.benzinga.com/api/v1/news/stream` |
@@ -119,7 +116,7 @@ The project is configured completely via Environment Variables. You can set thes
 ### LLM Settings
 | Variable | Description | Default |
 | :--- | :--- | :--- |
-| `LLM_BASE_URL` | Base URL for LLM API compatible with OpenAI SDK. | `https://api.groq.com/openai/v1` |
+| `LLM_BASE_URL` | Base URL for LLM API compatible with OpenAI SDK. | `https://` |
 | `OPENAI_MODEL` | Primary model for logic agents. | `openai/gpt-oss-120b` |
 | `LLM_CONCURRENCY` | Max concurrent LLM requests. | `8` |
 | `LLM_TIMEOUT_SECONDS` | Timeout for LLM calls | `300` |
@@ -143,7 +140,6 @@ The project is configured completely via Environment Variables. You can set thes
 2.  **Run the main application:**
     ```bash
     # export your keys first!
-    export GROQ_API_KEY="your_key"
     export OPENAI_API_KEY="your_key"
     
     python main.py
